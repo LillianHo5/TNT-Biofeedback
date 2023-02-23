@@ -13,7 +13,6 @@ const MyStack = () => {
         <Stack.Screen
           name="Sign Up"
           component={SignUp}
-          options={{ title: 'Sign Up' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

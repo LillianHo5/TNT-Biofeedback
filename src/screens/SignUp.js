@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, TextInput, Alert } from 'react-native';
-import { CheckBox } from '@react-native-community/checkbox';
+import { CheckBox } from 'react-native-elements';
+
 import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabase('MainDB.db');
 
 export default function SignUp({ navigation }) {
+    console.log('SignUp component is rendering');
 
     const [name, setName] = useState('');
     const [age, setAge] = useState('');
@@ -14,13 +16,11 @@ export default function SignUp({ navigation }) {
         f: false,
         m: false,
     });
-    const [sex, setSex] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
     useEffect(() => {
         createTable();
-        setData();
     }, []);
 
     const createTable = () => {
@@ -28,10 +28,13 @@ export default function SignUp({ navigation }) {
             tx.executeSql(
                 "CREATE TABLE IF NOT EXISTS "
                 + "Users "
-                + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, Age INTEGER, Email TEXT, Sex TEXT, Password TEXT);"
-            )
-        })
-    }
+                + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, Age INTEGER, Email TEXT, Sex TEXT, Password TEXT);",
+                [],
+                () => console.log('Table created successfully'),
+                error => console.log('Error occurred while creating the table: ', error)
+            );
+        });
+    };
 
     const setData = async () => {
         if (!name) {
@@ -46,7 +49,7 @@ export default function SignUp({ navigation }) {
             Alert.alert('Please provide an email');
             return;
         }
-        if (!checkboxState.f && !checkboxState.m) {
+        if (!initialCheckboxState.f && !initialCheckboxState.m) {
             Alert.alert("Please provide your sex")
             return;
         }
@@ -59,12 +62,17 @@ export default function SignUp({ navigation }) {
             return;
         }
         // Set sex value 
-        const sex = checkboxState.f ? 'f' : 'm';
+        const sex = initialCheckboxState.f ? 'f' : 'm';
         try {
             await db.transaction(async (tx) => {
                 await tx.executeSql(
                     "INSERT INTO Users (Name, Age, Email, Sex, Password) VALUES (?, ?, ?, ?, ?)",
-                    [name, age, email, sex, password]
+                    [name, age, email, sex, password],
+                    () => {
+                        console.log('Data inserted successfully');
+                        navigation.navigate('Home');
+                    },
+                    error => console.log('Error occurred while inserting data: ', error)
                 );
             })
         } catch (error) {
@@ -106,6 +114,7 @@ export default function SignUp({ navigation }) {
                         setInitialCheckboxState({
                             ...initialCheckboxState,
                             f: value,
+                            m: !value // automatically uncheck the other checkbox
                         })
                     }
                     style={stylesContainer.checkbox}
@@ -117,12 +126,12 @@ export default function SignUp({ navigation }) {
                         setInitialCheckboxState({
                             ...initialCheckboxState,
                             m: value,
+                            f: !value // automatically uncheck the other checkbox
                         })
                     }
                     style={stylesContainer.checkbox}
                 />
                 <Text>M</Text>
-
             </View>
         </View>
     );
@@ -132,7 +141,8 @@ export default function SignUp({ navigation }) {
 const stylesContainer = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor: '#EE4B2B'
     }, input: {
         // your input styles here
     },
