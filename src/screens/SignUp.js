@@ -1,15 +1,9 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, CheckBox, Text, TextInput, Alert, Button } from 'react-native';
-import SQLite from 'react-native-sqlite-storage';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, Text, TextInput, Alert, Button } from 'react-native';
+import { CheckBox } from '@react-native-community/checkbox';
+import * as SQLite from 'expo-sqlite';
 
-const db = SQLite.openDatabase(
-    {
-        name: 'MainDB',
-        location: 'default',
-    },
-    () => { },
-    error => { console.log(error) }
-);
+const db = SQLite.openDatabase('MainDB.db');
 
 export default function SignUp({ navigation }) {
 
@@ -23,6 +17,11 @@ export default function SignUp({ navigation }) {
     const [sex, setSex] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+
+    useEffect(() => {
+        createTable();
+        setData();
+    }, []);
 
     const createTable = () => {
         db.transaction((tx) => {
@@ -56,7 +55,7 @@ export default function SignUp({ navigation }) {
             return;
         }
         if (confirmPassword.length == 0) {
-            Alert.alert('Please re-renter your password');
+            Alert.alert('Please re-enter your password');
             return;
         }
         // Set sex value 
@@ -78,33 +77,33 @@ export default function SignUp({ navigation }) {
     };
 
     return (
-        <View style={styles.container}>
+        <View style={stylesContainer.container}>
             <TextInput
-                style={styles.input}
+                style={stylesContainer.input}
                 placeholder='Enter your name'
                 onChangeText={(value) => setName(value)}
             />
             <TextInput
-                style={styles.input}
+                style={stylesContainer.input}
                 placeholder='Enter your age'
                 onChangeText={(value) => setAge(value)}
             />
             <TextInput
-                style={styles.input}
+                style={stylesContainer.input}
                 placeholder='Enter your email'
                 onChangeText={(value) => setEmail(value)}
             />
             <TextInput
-                style={styles.input}
+                style={stylesContainer.input}
                 placeholder='Enter your password'
                 onChangeText={(value) => setPassword(value)}
             />
             <TextInput
-                style={styles.input}
+                style={stylesContainer.input}
                 placeholder='Re-enter your password'
                 onChangeText={(value) => setConfirmPassword(value)}
             />
-            <View style={styles.checkboxWrapper}>
+            <View style={stylesContainer.checkboxWrapper}>
                 <CheckBox
                     value={initialCheckboxState.f}
                     onValueChange={(value) =>
@@ -113,7 +112,7 @@ export default function SignUp({ navigation }) {
                             f: value,
                         })
                     }
-                    style={styles.checkbox}
+                    style={stylesContainer.checkbox}
                 />
                 <Text>F</Text>
                 <CheckBox
@@ -124,18 +123,25 @@ export default function SignUp({ navigation }) {
                             m: value,
                         })
                     }
-                    style={styles.checkbox}
+                    style={stylesContainer.checkbox}
                 />
                 <Text>M</Text>
+
             </View>
         </View>
     );
 }
 
-const styles = StyleSheet.create({
-    body: {
+
+const stylesContainer = StyleSheet.create({
+    container: {
         flex: 1,
         alignItems: 'center'
+    }, input: {
+        // your input styles here
+    },
+    checkboxWrapper: {
+        // your checkboxWrapper styles here
     },
     checkbox: {
         alignSelf: 'center',
