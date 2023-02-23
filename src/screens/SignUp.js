@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, TextInput, Alert, Button } from 'react-native';
+import { View, StyleSheet, Text, TextInput, Alert } from 'react-native';
 import { CheckBox } from '@react-native-community/checkbox';
 import * as SQLite from 'expo-sqlite';
 
@@ -34,36 +34,32 @@ export default function SignUp({ navigation }) {
     }
 
     const setData = async () => {
-        if (name.length == 0) {
+        if (!name) {
             Alert.alert('Please provide a name');
             return;
         }
-        if (age.length == 0) {
+        if (!age) {
             Alert.alert('Please provide an age');
             return;
         }
-        if (email.length == 0) {
+        if (!email) {
             Alert.alert('Please provide an email');
             return;
         }
-        if (initialCheckboxState.f == false && initialCheckboxState.m == false) {
+        if (!checkboxState.f && !checkboxState.m) {
             Alert.alert("Please provide your sex")
             return;
         }
-        if (password.length == 0) {
+        if (!password) {
             Alert.alert('Please provide a password');
             return;
         }
-        if (confirmPassword.length == 0) {
+        if (!confirmPassword) {
             Alert.alert('Please re-enter your password');
             return;
         }
         // Set sex value 
-        if (initialCheckboxState.f == true) {
-            setSex('f');
-        } else if (initialCheckboxState.m == true) {
-            setSex('m');
-        }
+        const sex = checkboxState.f ? 'f' : 'm';
         try {
             await db.transaction(async (tx) => {
                 await tx.executeSql(
