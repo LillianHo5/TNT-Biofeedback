@@ -33,6 +33,7 @@ export default function SignUp({ navigation }) {
                 );
             });
             console.log('Table created successfully');
+
         } catch (error) {
             console.log('Error occurred while creating the table: ', error);
         }
@@ -73,7 +74,7 @@ export default function SignUp({ navigation }) {
                     [name, age, email, sex, password],
                     () => {
                         console.log('Data inserted successfully');
-                        navigation.navigate('Home');
+                        //navigation.navigate('Login');
                     },
                     error => console.log('Error occurred while inserting data: ', error)
                 );
@@ -144,21 +145,35 @@ export default function SignUp({ navigation }) {
             <Button title="Submit" onPress={setData} />
         </View>
     );
-}
 
+}
 
 const stylesContainer = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        backgroundColor: '#EE4B2B'
-    }, input: {
-        // your input styles here
+    },
+    input: {
+        height: 40,
+        width: '80%',
+        borderColor: 'gray',
+        borderWidth: 1,
+        padding: 10,
+        marginBottom: 10,
     },
     checkboxWrapper: {
-        // your checkboxWrapper styles here
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginVertical: 20,
     },
     checkbox: {
         alignSelf: 'center',
+    },
+    text: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 5,
+        color: '#FFFFFF'
     }
 });
