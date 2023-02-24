@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, TextInput, Alert } from 'react-native';
+import { View, StyleSheet, Text, TextInput, Alert, Button } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 
 import * as SQLite from 'expo-sqlite';
@@ -23,18 +23,21 @@ export default function SignUp({ navigation }) {
         createTable();
     }, []);
 
-    const createTable = () => {
-        db.transaction((tx) => {
-            tx.executeSql(
-                "CREATE TABLE IF NOT EXISTS "
-                + "Users "
-                + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, Age INTEGER, Email TEXT, Sex TEXT, Password TEXT);",
-                [],
-                () => console.log('Table created successfully'),
-                error => console.log('Error occurred while creating the table: ', error)
-            );
-        });
+    const createTable = async () => {
+        try {
+            await db.transaction(async (tx) => {
+                await tx.executeSql(
+                    "CREATE TABLE IF NOT EXISTS " +
+                    "Users " +
+                    "(ID INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, Age INTEGER, Email TEXT, Sex TEXT, Password TEXT);"
+                );
+            });
+            console.log('Table created successfully');
+        } catch (error) {
+            console.log('Error occurred while creating the table: ', error);
+        }
     };
+
 
     const setData = async () => {
         if (!name) {
@@ -82,29 +85,34 @@ export default function SignUp({ navigation }) {
 
     return (
         <View style={stylesContainer.container}>
+            <Text>Enter your name:</Text>
             <TextInput
                 style={stylesContainer.input}
-                placeholder='Enter your name'
+                placeholder="Name"
                 onChangeText={(value) => setName(value)}
             />
+            <Text>Enter your age:</Text>
             <TextInput
                 style={stylesContainer.input}
-                placeholder='Enter your age'
+                placeholder="Age"
                 onChangeText={(value) => setAge(value)}
             />
+            <Text>Enter your email:</Text>
             <TextInput
                 style={stylesContainer.input}
-                placeholder='Enter your email'
+                placeholder="Email"
                 onChangeText={(value) => setEmail(value)}
             />
+            <Text>Enter your password:</Text>
             <TextInput
                 style={stylesContainer.input}
-                placeholder='Enter your password'
+                placeholder="Password"
                 onChangeText={(value) => setPassword(value)}
             />
+            <Text>Confirm your password:</Text>
             <TextInput
                 style={stylesContainer.input}
-                placeholder='Re-enter your password'
+                placeholder="Confirm Password"
                 onChangeText={(value) => setConfirmPassword(value)}
             />
             <View style={stylesContainer.checkboxWrapper}>
@@ -114,7 +122,7 @@ export default function SignUp({ navigation }) {
                         setInitialCheckboxState({
                             ...initialCheckboxState,
                             f: value,
-                            m: !value // automatically uncheck the other checkbox
+                            m: !value, // automatically uncheck the other checkbox
                         })
                     }
                     style={stylesContainer.checkbox}
@@ -126,13 +134,14 @@ export default function SignUp({ navigation }) {
                         setInitialCheckboxState({
                             ...initialCheckboxState,
                             m: value,
-                            f: !value // automatically uncheck the other checkbox
+                            f: !value, // automatically uncheck the other checkbox
                         })
                     }
                     style={stylesContainer.checkbox}
                 />
                 <Text>M</Text>
             </View>
+            <Button title="Submit" onPress={setData} />
         </View>
     );
 }
