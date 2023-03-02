@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, TextInput, Alert, Button } from 'react-native';
+import { View, StyleSheet, Text, TextInput, Alert, Pressable } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 
 import * as SQLite from 'expo-sqlite';
@@ -41,6 +41,10 @@ export default function SignUp({ navigation }) {
 
 
     const setData = async () => {
+        if (!name && !age && !email & !initialCheckboxState.f && !initialCheckboxState.m && !password && !confirmPassword) {
+            Alert.alert('Please provide your information.');
+            return;
+        }
         if (!name) {
             Alert.alert('Please provide a name');
             return;
@@ -85,87 +89,130 @@ export default function SignUp({ navigation }) {
     };
 
     return (
-        <View style={stylesContainer.container}>
-            <Text>Enter your name:</Text>
+        <View style={styles.container}>
+            <View style={styles.textGroup}>
+                <Text style={styles.label}>Name</Text>
+                <Text>*</Text>
+            </View>
             <TextInput
-                style={stylesContainer.input}
+                style={styles.input}
                 placeholder="Name"
                 onChangeText={(value) => setName(value)}
             />
-            <Text>Enter your age:</Text>
+            <View style={styles.textGroup}>
+                <Text style={styles.label}>Age</Text>
+                <Text>*</Text>
+            </View>
             <TextInput
-                style={stylesContainer.input}
+                style={styles.input}
                 placeholder="Age"
                 onChangeText={(value) => setAge(value)}
             />
-            <Text>Enter your email:</Text>
+            <View style={styles.checkboxGroup}>
+                <View style={styles.textGroup}>
+                    <Text style={styles.label}>Sex</Text>
+                    <Text>*</Text>
+                </View>
+                <View style={styles.checkboxWrapper}>
+                    <Text>M</Text>
+                    <CheckBox
+                        value={initialCheckboxState.f}
+                        onValueChange={(value) =>
+                            setInitialCheckboxState({
+                                ...initialCheckboxState,
+                                f: value,
+                                m: !value, // automatically uncheck the other checkbox
+                            })
+                        }
+                        style={styles.checkbox}
+                    />
+                    <Text>F</Text>
+                    <CheckBox
+                        value={initialCheckboxState.m}
+                        onValueChange={(value) =>
+                            setInitialCheckboxState({
+                                ...initialCheckboxState,
+                                m: value,
+                                f: !value, // automatically uncheck the other checkbox
+                            })
+                        }
+                        style={styles.checkbox}
+                    />
+                </View>
+            </View>
+            <View style={styles.textGroup}>
+                <Text style={styles.label}>Email</Text>
+                <Text>*</Text>
+            </View>
             <TextInput
-                style={stylesContainer.input}
+                style={styles.input}
                 placeholder="Email"
                 onChangeText={(value) => setEmail(value)}
             />
-            <Text>Enter your password:</Text>
+            <View style={styles.textGroup}>
+                <Text style={styles.label}>Password</Text>
+                <Text>*</Text>
+            </View>
             <TextInput
-                style={stylesContainer.input}
+                style={styles.input}
                 placeholder="Password"
                 onChangeText={(value) => setPassword(value)}
             />
-            <Text>Confirm your password:</Text>
+            <View style={styles.textGroup}>
+                <Text style={styles.label}>Confirm Password</Text>
+                <Text>*</Text>
+            </View>
             <TextInput
-                style={stylesContainer.input}
+                style={styles.input}
                 placeholder="Confirm Password"
                 onChangeText={(value) => setConfirmPassword(value)}
             />
-            <View style={stylesContainer.checkboxWrapper}>
-                <CheckBox
-                    value={initialCheckboxState.f}
-                    onValueChange={(value) =>
-                        setInitialCheckboxState({
-                            ...initialCheckboxState,
-                            f: value,
-                            m: !value, // automatically uncheck the other checkbox
-                        })
-                    }
-                    style={stylesContainer.checkbox}
-                />
-                <Text>F</Text>
-                <CheckBox
-                    value={initialCheckboxState.m}
-                    onValueChange={(value) =>
-                        setInitialCheckboxState({
-                            ...initialCheckboxState,
-                            m: value,
-                            f: !value, // automatically uncheck the other checkbox
-                        })
-                    }
-                    style={stylesContainer.checkbox}
-                />
-                <Text>M</Text>
-            </View>
-            <Button title="Submit" onPress={setData} />
+            <Pressable style={styles.button} onPress={setData}>
+                <Text styles={styles.buttonText}>Submit</Text>
+            </Pressable>
         </View>
     );
 
 }
 
-const stylesContainer = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
+        justifyContent: 'center',
     },
-    input: {
-        height: 40,
-        width: '80%',
-        borderColor: 'gray',
-        borderWidth: 1,
-        padding: 10,
-        marginBottom: 10,
+    textGroup: {
+        alignItems: 'center',
+        flexDirection: 'row',
+        alignSelf: 'flex-start'
+    },
+
+    label: {
+        fontSize: '18px',
+        marginRight: 20,
+        marginLeft: 55,
+        marginBottom: 5,
+        alignSelf: 'flex-start'
+    },
+    checkboxGroup: {
+        flexDirection: 'row',
+        width: '100%'
     },
     checkboxWrapper: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         marginVertical: 20,
+    },
+    input: {
+        height: 40,
+        width: '70%',
+        textAlign: 'center',
+        borderColor: 'black',
+        borderWidth: 1,
+        borderRadius: 5,
+        padding: 10,
+        marginBottom: 30,
     },
     checkbox: {
         alignSelf: 'center',
@@ -175,5 +222,8 @@ const stylesContainer = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 5,
         color: '#FFFFFF'
+    },
+    button: {
+        // Add styling
     }
 });
