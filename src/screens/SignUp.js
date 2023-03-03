@@ -41,39 +41,20 @@ export default function SignUp({ navigation }) {
 
 
     const setData = async () => {
-        if (!name && !age && !email && !initialCheckboxState.f && !initialCheckboxState.m && !password && !confirmPassword) {
+        if (!name || !age || !email || (!initialCheckboxState.f && !initialCheckboxState.m) || !password || !confirmPassword) {
             Alert.alert('Please provide your information.');
             return;
         }
-        if (!name) {
-            Alert.alert('Please provide a name');
+        if (!(password === confirmPassword)) {
+            Alert.alert('Passwords do not match.');
             return;
         }
-        if (!age) {
-            Alert.alert('Please provide an age');
-            return;
-        }
-        if (!email) {
-            Alert.alert('Please provide an email');
-            return;
-        }
-        if (!initialCheckboxState.f && !initialCheckboxState.m) {
-            Alert.alert("Please provide your sex")
-            return;
-        }
-        if (!password) {
-            Alert.alert('Please provide a password');
-            return;
-        }
-        if (!confirmPassword) {
-            Alert.alert('Please re-enter your password');
+        if (!(/^\d+$/.test(age))) {
+            Alert.alert('Please provide numerical values for your age.');
             return;
         }
         // Set sex value 
         const sex = initialCheckboxState.f ? 'f' : 'm';
-
-        // Create the table first
-        await createTable();
 
         try {
             await db.transaction(async (tx) => {
@@ -86,6 +67,7 @@ export default function SignUp({ navigation }) {
                     },
                     error => console.log('Error occurred while inserting data: ', error)
                 );
+                await tx.executeSql('COMMIT;');
             })
         } catch (error) {
             console.log(error);
@@ -148,6 +130,7 @@ export default function SignUp({ navigation }) {
             <TextInput
                 style={styles.input}
                 placeholder="Password"
+                secureTextEntry={true}
                 onChangeText={(value) => setPassword(value)}
             />
             <View style={styles.textGroup}>
@@ -157,6 +140,7 @@ export default function SignUp({ navigation }) {
             <TextInput
                 style={styles.input}
                 placeholder="Confirm Password"
+                secureTextEntry={true}
                 onChangeText={(value) => setConfirmPassword(value)}
             />
             <Pressable style={styles.button} onPress={setData}>
