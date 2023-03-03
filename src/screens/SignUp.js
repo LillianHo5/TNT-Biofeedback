@@ -41,7 +41,7 @@ export default function SignUp({ navigation }) {
 
 
     const setData = async () => {
-        if (!name && !age && !email & !initialCheckboxState.f && !initialCheckboxState.m && !password && !confirmPassword) {
+        if (!name && !age && !email && !initialCheckboxState.f && !initialCheckboxState.m && !password && !confirmPassword) {
             Alert.alert('Please provide your information.');
             return;
         }
@@ -71,6 +71,10 @@ export default function SignUp({ navigation }) {
         }
         // Set sex value 
         const sex = initialCheckboxState.f ? 'f' : 'm';
+
+        // Create the table first
+        await createTable();
+
         try {
             await db.transaction(async (tx) => {
                 await tx.executeSql(
@@ -78,7 +82,7 @@ export default function SignUp({ navigation }) {
                     [name, age, email, sex, password],
                     () => {
                         console.log('Data inserted successfully');
-                        //navigation.navigate('Login');
+                        navigation.navigate('Home');
                     },
                     error => console.log('Error occurred while inserting data: ', error)
                 );
@@ -92,7 +96,7 @@ export default function SignUp({ navigation }) {
         <View style={styles.container}>
             <View style={styles.textGroup}>
                 <Text style={styles.label}>Name</Text>
-                <Text>*</Text>
+                <Text style={styles.asterisk}>*</Text>
             </View>
             <TextInput
                 style={styles.input}
@@ -101,7 +105,7 @@ export default function SignUp({ navigation }) {
             />
             <View style={styles.textGroup}>
                 <Text style={styles.label}>Age</Text>
-                <Text>*</Text>
+                <Text style={styles.asterisk}>*</Text>
             </View>
             <TextInput
                 style={styles.input}
@@ -111,38 +115,26 @@ export default function SignUp({ navigation }) {
             <View style={styles.checkboxGroup}>
                 <View style={styles.textGroup}>
                     <Text style={styles.label}>Sex</Text>
-                    <Text>*</Text>
+                    <Text style={styles.asterisk}>*</Text>
                 </View>
                 <View style={styles.checkboxWrapper}>
                     <Text>M</Text>
                     <CheckBox
-                        value={initialCheckboxState.f}
-                        onValueChange={(value) =>
-                            setInitialCheckboxState({
-                                ...initialCheckboxState,
-                                f: value,
-                                m: !value, // automatically uncheck the other checkbox
-                            })
-                        }
+                        checked={initialCheckboxState.m}
+                        onPress={() => setInitialCheckboxState({ ...initialCheckboxState, m: !initialCheckboxState.m, f: false })}
                         style={styles.checkbox}
                     />
                     <Text>F</Text>
                     <CheckBox
-                        value={initialCheckboxState.m}
-                        onValueChange={(value) =>
-                            setInitialCheckboxState({
-                                ...initialCheckboxState,
-                                m: value,
-                                f: !value, // automatically uncheck the other checkbox
-                            })
-                        }
+                        checked={initialCheckboxState.f}
+                        onPress={() => setInitialCheckboxState({ ...initialCheckboxState, f: !initialCheckboxState.f, m: false })}
                         style={styles.checkbox}
                     />
                 </View>
             </View>
             <View style={styles.textGroup}>
                 <Text style={styles.label}>Email</Text>
-                <Text>*</Text>
+                <Text style={styles.asterisk}>*</Text>
             </View>
             <TextInput
                 style={styles.input}
@@ -151,7 +143,7 @@ export default function SignUp({ navigation }) {
             />
             <View style={styles.textGroup}>
                 <Text style={styles.label}>Password</Text>
-                <Text>*</Text>
+                <Text style={styles.asterisk}>*</Text>
             </View>
             <TextInput
                 style={styles.input}
@@ -160,7 +152,7 @@ export default function SignUp({ navigation }) {
             />
             <View style={styles.textGroup}>
                 <Text style={styles.label}>Confirm Password</Text>
-                <Text>*</Text>
+                <Text style={styles.asterisk}>*</Text>
             </View>
             <TextInput
                 style={styles.input}
@@ -168,7 +160,7 @@ export default function SignUp({ navigation }) {
                 onChangeText={(value) => setConfirmPassword(value)}
             />
             <Pressable style={styles.button} onPress={setData}>
-                <Text styles={styles.buttonText}>Submit</Text>
+                <Text style={{ color: 'white' }}>Submit</Text>
             </Pressable>
         </View>
     );
@@ -186,7 +178,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignSelf: 'flex-start'
     },
-
+    asterisk: {
+        color: 'red',
+        fontWeight: 'bold',
+        marginLeft: -3
+    },
     label: {
         fontSize: '18px',
         marginRight: 20,
@@ -209,6 +205,7 @@ const styles = StyleSheet.create({
         width: '70%',
         textAlign: 'center',
         borderColor: 'black',
+        backgroundColor: 'white',
         borderWidth: 1,
         borderRadius: 5,
         padding: 10,
@@ -224,6 +221,11 @@ const styles = StyleSheet.create({
         color: '#FFFFFF'
     },
     button: {
-        // Add styling
+        backgroundColor: '#00CCFF',
+        padding: 10,
+        borderRadius: 5
+    },
+    buttonText: {
+        borderRadius: 5
     }
 });
