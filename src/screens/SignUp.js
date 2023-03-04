@@ -39,7 +39,6 @@ export default function SignUp({ navigation }) {
         }
     };
 
-
     const setData = async () => {
         if (!name || !age || !email || (!initialCheckboxState.f && !initialCheckboxState.m) || !password || !confirmPassword) {
             Alert.alert('Please provide your information.');
@@ -49,44 +48,44 @@ export default function SignUp({ navigation }) {
             Alert.alert('Passwords do not match.');
             return;
         }
-        if (!(/^\d+$/.test(age))) {
+        if (!/^\d+$/.test(age)) {
             Alert.alert('Please provide numerical values for your age.');
             return;
         }
-        // Set sex value 
-        const sex = initialCheckboxState.f ? 'f' : 'm';
 
-        let emailUsed = false;
+        // Set sex value
+        const sex = initialCheckboxState.f ? 'f' : 'm';
 
         try {
             await db.transaction(async (tx) => {
                 // Check if the email already exists
-                await tx.executeSql(
+                tx.executeSql(
                     'SELECT Email FROM Users WHERE Email = ?',
                     [email],
                     (tx, results) => {
-                        var len = results.rows.length;
+                        const len = results.rows.length;
                         if (len > 0) {
-                            emailUsed = true;
                             Alert.alert('This email is already in use.');
-                            return;
+                        } else {
+                            // Insert data if the email is not in use
+                            tx.executeSql(
+                                'INSERT INTO Users (Name, Age, Email, Sex, Password) VALUES (?, ?, ?, ?, ?)',
+                                [name, age, email, sex, password],
+                                () => {
+                                    console.log('Data inserted successfully');
+                                    navigation.navigate('Login');
+                                },
+                                (error) =>
+                                    console.log(
+                                        'Error occurred while inserting data: ',
+                                        error
+                                    )
+                            );
                         }
                     }
                 );
-
-                if (!emailUSed) {
-                    await tx.executeSql(
-                        "INSERT INTO Users (Name, Age, Email, Sex, Password) VALUES (?, ?, ?, ?, ?)",
-                        [name, age, email, sex, password],
-                        () => {
-                            console.log('Data inserted successfully');
-                            navigation.navigate('Login');
-                        },
-                        error => console.log('Error occurred while inserting data: ', error)
-                    );
-                    await tx.executeSql('COMMIT;');
-                }
-            })
+                await tx.executeSql('COMMIT;');
+            });
         } catch (error) {
             console.log(error);
         }
