@@ -63,7 +63,7 @@ export default function SignUp({ navigation }) {
                     [name, age, email, sex, password],
                     () => {
                         console.log('Data inserted successfully');
-                        navigation.navigate('Home');
+                        navigation.navigate('Login');
                     },
                     error => console.log('Error occurred while inserting data: ', error)
                 );
@@ -146,7 +146,7 @@ export default function SignUp({ navigation }) {
             <Pressable style={styles.button} onPress={setData}>
                 <Text style={{ color: 'white' }}>Submit</Text>
             </Pressable>
-        </View>
+        </View >
     );
 
 }
@@ -205,8 +205,8 @@ const styles = StyleSheet.create({
         color: '#FFFFFF'
     },
     button: {
-        backgroundColor: '#00CCFF',
         padding: 10,
+        backgroundColor: '#191970',
         borderRadius: 5
     },
     buttonText: {
