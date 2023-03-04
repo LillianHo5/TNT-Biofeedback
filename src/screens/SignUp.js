@@ -56,18 +56,36 @@ export default function SignUp({ navigation }) {
         // Set sex value 
         const sex = initialCheckboxState.f ? 'f' : 'm';
 
+        let emailUsed = false;
+
         try {
             await db.transaction(async (tx) => {
+                // Check if the email already exists
                 await tx.executeSql(
-                    "INSERT INTO Users (Name, Age, Email, Sex, Password) VALUES (?, ?, ?, ?, ?)",
-                    [name, age, email, sex, password],
-                    () => {
-                        console.log('Data inserted successfully');
-                        navigation.navigate('Login');
-                    },
-                    error => console.log('Error occurred while inserting data: ', error)
+                    'SELECT Email FROM Users WHERE Email = ?',
+                    [email],
+                    (tx, results) => {
+                        var len = results.rows.length;
+                        if (len > 0) {
+                            emailUsed = true;
+                            Alert.alert('This email is already in use.');
+                            return;
+                        }
+                    }
                 );
-                await tx.executeSql('COMMIT;');
+
+                if (!emailUSed) {
+                    await tx.executeSql(
+                        "INSERT INTO Users (Name, Age, Email, Sex, Password) VALUES (?, ?, ?, ?, ?)",
+                        [name, age, email, sex, password],
+                        () => {
+                            console.log('Data inserted successfully');
+                            navigation.navigate('Login');
+                        },
+                        error => console.log('Error occurred while inserting data: ', error)
+                    );
+                    await tx.executeSql('COMMIT;');
+                }
             })
         } catch (error) {
             console.log(error);

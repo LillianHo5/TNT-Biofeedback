@@ -30,10 +30,10 @@ export default function Login({ navigation }) {
         }
     };
 
-    const getData = () => {
+    const getData = async () => {
         try {
-            db.transaction(async (tx) => {
-                tx.executeSql(
+            await db.transaction(async (tx) => {
+                await tx.executeSql(
                     "SELECT * FROM Users WHERE Email = ? AND Password = ?",
                     [email, password],
                     (tx, results) => {
