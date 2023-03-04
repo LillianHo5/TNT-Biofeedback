@@ -136,13 +136,13 @@ const styles = StyleSheet.create({
         color: '#FFFFFF'
     },
     button: {
-        backgroundColor: '#191970',
+        backgroundColor: '#3D59AB',
         padding: 10,
         borderRadius: 5,
         marginBottom: 15
     },
     signUpButton: {
-        backgroundColor: '#3D59AB',
+        backgroundColor: '#191970',
         padding: 10,
         borderRadius: 5,
         marginBottom: 15
