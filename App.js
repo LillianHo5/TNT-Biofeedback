@@ -5,12 +5,17 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SignUp from './src/screens/SignUp.js';
 import Home from './src/screens/Home.js';
 import Login from './src/screens/Login.js';
+import Splash from './src/screens/Splash.js';
 
 const Stack = createNativeStackNavigator();
 
 const MyStack = () => {
   return (
     <Stack.Navigator>
+      <Stack.Screen
+        name="Splash"
+        component={Splash}
+      />
       <Stack.Screen
         name="Login"
         component={Login}

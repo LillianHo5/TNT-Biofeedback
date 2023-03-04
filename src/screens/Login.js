@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, TextInput, Pressable } from 'react-native';
+import { View, StyleSheet, Text, TextInput, Pressable, Image } from 'react-native';
 
 import * as SQLite from 'expo-sqlite';
 
@@ -57,6 +57,10 @@ export default function Login({ navigation }) {
 
     return (
         <View style={styles.container}>
+            <Image
+                style={styles.icon}
+                source={require('../../assets/biofeedback-logo.png')}
+            />
             <Text style={styles.header}>Login</Text>
             <Text style={styles.label}>Email</Text>
             <TextInput
@@ -88,10 +92,17 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: '#ffffff'
     },
     header: {
         fontSize: 30,
-        marginBottom: 30
+        marginBottom: 25,
+        marginTop: 20
+    },
+    icon: {
+        alignSelf: 'center',
+        width: 100,
+        height: 100,
     },
     textGroup: {
         alignItems: 'center',
@@ -149,5 +160,8 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         borderRadius: 5
+    },
+    resetPassword: {
+        marginBottom: 35
     }
 });
