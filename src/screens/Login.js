@@ -30,16 +30,17 @@ export default function Login({ navigation }) {
         }
     };
 
-    const getData = () => {
+    const getData = async () => {
         try {
-            db.transaction(async (tx) => {
-                tx.executeSql(
+            await db.transaction(async (tx) => {
+                await tx.executeSql(
                     "SELECT * FROM Users WHERE Email = ? AND Password = ?",
                     [email, password],
                     (tx, results) => {
                         var len = results.rows.length;
                         if (len > 0) {
-                            navigation.navigate('Home');
+                            var retrievedName = results.rows.item(0).Name;
+                            navigation.navigate('Home', { name: retrievedName });
                         } else {
                             console.log("Invalid username or password");
                         }
