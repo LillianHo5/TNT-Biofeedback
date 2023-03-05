@@ -46,7 +46,7 @@ export default function Home({ navigation, route }) {
     }
 
     return (
-        <View>
+        <View style={styles.container}>
             <Text style={styles.header}>Hi {route.params.name || Name}!</Text>
         </View>
     )
@@ -56,13 +56,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center',
         backgroundColor: '#ffffff'
     },
     header: {
         fontSize: 30,
         alignSelf: 'center',
-        marginBottom: 25,
-        marginTop: 25
+        marginTop: 50
     },
 });
