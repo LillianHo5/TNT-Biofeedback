@@ -39,7 +39,8 @@ export default function Login({ navigation }) {
                     (tx, results) => {
                         var len = results.rows.length;
                         if (len > 0) {
-                            navigation.navigate('Home');
+                            var retrievedName = results.rows.item(0).Name;
+                            navigation.navigate('Home', { name: retrievedName });
                         } else {
                             console.log("Invalid username or password");
                         }

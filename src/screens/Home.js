@@ -37,7 +37,7 @@ export default function Home({ navigation, route }) {
                     (tx, results) => {
                         var userName = results.rows.item(0).Name;
                         setName(userName);
-                        }
+                    }
                 )
             })
         } catch (error) {
@@ -47,7 +47,7 @@ export default function Home({ navigation, route }) {
 
     return (
         <View>
-            <Text style={styles.header}>Hi {Name}!</Text>
+            <Text style={styles.header}>Hi {route.params.name || Name}!</Text>
         </View>
     )
 }
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#ffffff'
-    }, 
+    },
     header: {
         fontSize: 30,
         alignSelf: 'center',
