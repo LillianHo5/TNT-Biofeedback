@@ -73,6 +73,9 @@ export default function SignUp({ navigation }) {
                                 [name, age, email, sex, password],
                                 () => {
                                     console.log('Data inserted successfully');
+                                    setTimeout(() => {
+                                        Alert.alert('Account successfully created!');
+                                    }, 2000);
                                     navigation.navigate('Login');
                                 },
                                 (error) =>
