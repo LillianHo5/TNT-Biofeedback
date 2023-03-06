@@ -31,6 +31,10 @@ export default function Login({ navigation }) {
     };
 
     const getData = async () => {
+        if (!email || !password) {
+            Alert.alert('Please provide your login information.');
+            return;
+        }
         try {
             await db.transaction(async (tx) => {
                 await tx.executeSql(
