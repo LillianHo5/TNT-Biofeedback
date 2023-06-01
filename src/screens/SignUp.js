@@ -75,7 +75,7 @@ export default function SignUp({ navigation }) {
                                     console.log('Data inserted successfully');
                                     setTimeout(() => {
                                         Alert.alert('Account successfully created!');
-                                    }, 2000);
+                                    }, 250);
                                     navigation.navigate('Login');
                                 },
                                 (error) =>
