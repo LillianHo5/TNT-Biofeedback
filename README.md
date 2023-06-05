@@ -12,4 +12,3 @@ npm run dev
 ```
 npx expo start
 ```
-Then, run either `i` or `a`, depending on the emulator used.
